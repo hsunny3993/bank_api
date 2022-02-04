@@ -1,4 +1,18 @@
 Rails.application.routes.draw do
-  resources :users
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+  post 'authenticate', to: 'authentication#auth'
+
+  namespace :api do
+    namespace :v1 do
+      resources :transactions, only: [:index, :show]
+      resources :accounts, only: [:balance, :deposit, :withdraw, :transfer, :show] do
+        collection do
+          get :balance
+          post :deposit
+          post :withdraw
+          post :transfer
+        end
+      end
+      resources :customers, only: [:index, :show, :create, :update, :destroy]
+    end
+  end
 end
