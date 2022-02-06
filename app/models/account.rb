@@ -1,4 +1,6 @@
 class Account < ApplicationRecord
+  validates :account_number, presence: true, allow_blank: false, uniqueness: true
+
   def self.credit(account_number, amount)
     @account = find_by_account_number(account_number)
     current_balance = @account.account_balance

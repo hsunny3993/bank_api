@@ -14,23 +14,18 @@ module Api
       end
 
       def create
-        @customer = Customer.create(
-          name: params[:name],
-          email: params[:email],
-          phone: params[:phone]
-        )
-
-        @account = Account.create(
-          account_name: params[:account_name].nil? ? '' : params[:account_name],
-          customer_id: @customer.id,
-          account_number: Account.generate_account_number
-        )
-
-        if @customer && @account
-          render json: { id: @customer.id, name: @customer.name, email: @customer.email, phone: @customer.phone, 
-                         account_id: @account.id, account_number: @account.account_number, account_name: @account.account_name }
+        @customer = Customer.new(customer_params)
+        if @customer.save
+          @account = Account.new(account_params)
+          if @account.save
+            render json: { id: @customer.id, name: @customer.name, email: @customer.email, phone: @customer.phone,
+                           account_id: @account.id, account_number: @account.account_number,
+                           account_name: @account.account_name }, status: :created
+          else
+            render json: @account.errors, status: :unprocessable_entity
+          end
         else
-          render json: { error: 'Failed' }, status: 500
+          render json: @customer.errors, status: :unprocessable_entity
         end
       end
 
@@ -44,6 +39,8 @@ module Api
       end
 
       def destroy
+        @account = Account.find_by_customer_id(@customer.id)
+        @account.destroy
         @customer.destroy
         @customers = Customer.all
         render json: @customers
@@ -53,6 +50,22 @@ module Api
 
       def set_customer
         @customer = Customer.find(params[:id])
+      end
+
+      def customer_params
+        {
+          name: params[:name],
+          email: params[:email],
+          phone: params[:phone]
+        }
+      end
+
+      def account_params
+        {
+          account_name: params[:account_name].nil? ? '' : params[:account_name],
+          customer_id: @customer.id,
+          account_number: Account.generate_account_number
+        }
       end
     end
   end
