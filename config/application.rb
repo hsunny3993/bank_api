@@ -19,7 +19,7 @@ require "rails/test_unit/railtie"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-module BankApi
+module MonduTest
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
@@ -34,6 +34,14 @@ module BankApi
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
+    # Includes all libraries in lib directory
     config.autoload_paths << Rails.root.join('lib')
+
+    config.hosts = [
+      IPAddr.new('0.0.0.0/0'),        # All IPv4 addresses.
+      IPAddr.new('::/0'),             # All IPv6 addresses.
+      'localhost',                         # The localhost reserved domain.
+      'ba8f-82-103-129-80.ngrok.io'        # The ngrok reserved domain.
+    ]
   end
 end

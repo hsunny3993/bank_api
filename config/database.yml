@@ -85,5 +85,5 @@ test:
 production:
   <<: *default
   database: bank_api_production
-  username: bank_api
-  password: <%= ENV['BANK_API_DATABASE_PASSWORD'] %>
+  username: postgres
+  password: solomon

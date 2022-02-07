@@ -3,7 +3,7 @@ module Api
   module V1
     class TransactionsController < ApplicationController
       def_param_group :transaction_id do
-        param :id, Integer, required: true, desc: 'id of the requested transaction'
+        param :id, String, required: true, desc: 'id of the requested transaction'
       end
 
       api :GET, '/api/v1/transactions', 'Get transactions list'

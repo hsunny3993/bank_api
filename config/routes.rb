@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       resources :transactions, only: [:index, :show]
       resources :accounts, only: [:balance, :deposit, :withdraw, :transfer, :show] do
         collection do
+          get :show
           get :balance
           post :deposit
           post :withdraw

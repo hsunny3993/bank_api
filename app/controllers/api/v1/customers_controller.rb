@@ -5,7 +5,7 @@ module Api
       before_action :set_customer, only: [:show, :update, :destroy]
 
       def_param_group :customer_id do
-        param :id, Integer, required: true, desc: 'id of the requested customer'
+        param :id, String, required: true, desc: 'id of the requested customer'
       end
 
       def_param_group :create_customer_params do

@@ -4,18 +4,22 @@ module Api
       before_action :set_account, only: [:balance, :show, :deposit, :withdraw]
 
       def_param_group :account_id do
-        param :id, Integer, required: true, desc: 'id of the requested account'
+        param :id, String, required: true, desc: 'id of the requested account'
+      end
+
+      def_param_group :balance_account_id do
+        param :id, String, required: true, desc: 'id of the requested account'
       end
 
       def_param_group :deposit_withdraw do
-        param :id, Integer, required: true, desc: 'id of the requested account'
-        param :amount, BigDecimal, required: true, desc: 'requested amount'
+        param :id, String, required: true, desc: 'id of the requested account'
+        param :amount, String, required: true, desc: 'requested amount'
       end
 
       def_param_group :transfer do
-        param :from_account_id, Integer, required: true, desc: 'id of the debit account'
-        param :to_account_id, Integer, required: true, desc: 'id of the credit account'
-        param :amount, BigDecimal, required: true, desc: 'requested amount'
+        param :from_account_id, String, required: true, desc: 'id of the debit account'
+        param :to_account_id, String, required: true, desc: 'id of the credit account'
+        param :amount, String, required: true, desc: 'requested amount'
       end
 
       api :GET, '/api/v1/accounts/:id', 'Get an account'
@@ -25,7 +29,7 @@ module Api
       end
 
       api :GET, '/api/v1/accounts/balance', 'Get balance of account'
-      param_group :account_id
+      param_group :balance_account_id
       def balance
         render json: { balance: @account[:account_balance] }
       end
