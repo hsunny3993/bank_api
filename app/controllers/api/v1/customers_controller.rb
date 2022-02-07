@@ -4,15 +4,38 @@ module Api
     class CustomersController < ApplicationController
       before_action :set_customer, only: [:show, :update, :destroy]
 
+      def_param_group :customer_id do
+        param :id, Integer, required: true, desc: 'id of the requested customer'
+      end
+
+      def_param_group :create_customer_params do
+        param :name, String, required: true, desc: 'customer name'
+        param :email, String, required: true, desc: 'customer email'
+        param :phone, String, required: true, desc: 'customer phone'
+        param :account_name, String, required: false, desc: 'account name for customer'
+      end
+
+      def_param_group :update_customer_params do
+        param :name, String, required: true, desc: 'customer name'
+        param :email, String, required: true, desc: 'customer email'
+        param :phone, String, required: true, desc: 'customer phone'
+        param :account_name, String, required: false, desc: 'account name for customer'
+      end
+
+      api :GET, '/api/v1/customers', 'Get customers list'
       def index
         @customers = Customer.all
         render json: @customers
       end
 
+      api :GET, '/api/v1/customers/:id', 'Get a customer'
+      param_group :customer_id
       def show
         render json: @customer
       end
 
+      api :POST, '/api/v1/customers', 'Create a customer'
+      param_group :create_customer_params
       def create
         @customer = Customer.new(customer_params)
         if @customer.save
@@ -29,6 +52,8 @@ module Api
         end
       end
 
+      api :PUT, '/api/v1/customers/:id', 'Update a customer'
+      param_group :update_customer_params
       def update
         @customer.update(
           name: params[:name],
@@ -38,6 +63,8 @@ module Api
         render json: @customer
       end
 
+      api :DELETE, '/api/v1/customers/:id', 'Delete a customer'
+      param_group :customer_id
       def destroy
         @account = Account.find_by_customer_id(@customer.id)
         @account.destroy

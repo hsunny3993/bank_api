@@ -3,14 +3,35 @@ module Api
     class AccountsController < ApplicationController
       before_action :set_account, only: [:balance, :show, :deposit, :withdraw]
 
+      def_param_group :account_id do
+        param :id, Integer, required: true, desc: 'id of the requested account'
+      end
+
+      def_param_group :deposit_withdraw do
+        param :id, Integer, required: true, desc: 'id of the requested account'
+        param :amount, BigDecimal, required: true, desc: 'requested amount'
+      end
+
+      def_param_group :transfer do
+        param :from_account_id, Integer, required: true, desc: 'id of the debit account'
+        param :to_account_id, Integer, required: true, desc: 'id of the credit account'
+        param :amount, BigDecimal, required: true, desc: 'requested amount'
+      end
+
+      api :GET, '/api/v1/accounts/:id', 'Get an account'
+      param_group :account_id
       def show
         render json: @account
       end
 
+      api :GET, '/api/v1/accounts/balance', 'Get balance of account'
+      param_group :account_id
       def balance
         render json: { balance: @account[:account_balance] }
       end
 
+      api :POST, '/api/v1/accounts/deposit', 'Deposit onto account'
+      param_group :deposit_withdraw
       def deposit
         @account = Account.credit(@account.account_number, params[:amount].to_f)
         @customer = Customer.find(@account.customer_id)
@@ -26,6 +47,8 @@ module Api
         render json: @account
       end
 
+      api :POST, '/api/v1/accounts/withdraw', 'Withdraw onto account'
+      param_group :deposit_withdraw
       def withdraw
         @account = Account.debit(@account.account_number, params[:amount].to_f)
         @customer = Customer.find(@account.customer_id)
@@ -41,6 +64,8 @@ module Api
         render json: @account
       end
 
+      api :POST, '/api/v1/accounts/transfer', 'Withdraw onto account'
+      param_group :transfer
       def transfer
         now = DateTime.now
         from_account = Account.find(params[:from_account_id])

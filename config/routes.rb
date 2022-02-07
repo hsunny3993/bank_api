@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  apipie
   post 'authenticate', to: 'authentication#auth'
 
   namespace :api do
