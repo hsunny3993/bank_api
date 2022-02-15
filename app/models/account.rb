@@ -1,4 +1,5 @@
 class Account < ApplicationRecord
+  belongs_to :customer
   validates :account_number, presence: true, allow_blank: false, uniqueness: true
 
   def self.credit(account_number, amount)
